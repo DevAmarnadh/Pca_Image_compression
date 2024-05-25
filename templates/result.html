@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+
+    <style>
+        /* Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #85D8CE, #E3F9B5); /* Updated background gradient to shades of blue */
+            color: #333;
+            animation: gradientAnimation 10s ease infinite alternate; /* Added gradient animation */
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .top-bar {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            animation: discoColors 2s infinite alternate; /* Disco colors animation */
+        }
+
+        .bottom-bar {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            z-index: 1000;
+            overflow: hidden;
+            animation: discoColors 3s infinite alternate; /* Disco colors animation */
+        }
+
+        @keyframes changeColor {
+            0% {
+                background: linear-gradient(to right, #ff7e5f, #feb47b); /* Initial gradient */
+            }
+            25% {
+                background: linear-gradient(to right, #ff7e5f, #ffd75f); /* Gradient change 1 */
+            }
+            50% {
+                background: linear-gradient(to right, #ffd75f, #9dff5f); /* Gradient change 2 */
+            }
+            75% {
+                background: linear-gradient(to right, #9dff5f, #5f9dff); /* Gradient change 3 */
+            }
+            100% {
+                background: linear-gradient(to right, #5f9dff, #ff7e5f); /* Final gradient */
+            }
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: scroll 20s linear infinite; /* Slower scrolling speed */
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 120px auto 120px auto; /* Increased margin for better centering */
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.95); /* Lighter semi-transparent background */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); /* Improved shadow */
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1, h2 {
+                font-size: 1.5em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        Team AIML Image Compression Using PCA
+    </div>
+    <div class="container">
+        <h1>Result</h1>
+
+        <h2>Original Image</h2>
+        <p>Height: {{ original_info.Height }} pixels</p>
+        <p>Width: {{ original_info.Width }} pixels</p>
+        <p>Resolution: {{ original_info.Resolution }} pixels</p>
+        <p>Size: {{ original_size_kb }} KB</p>
+
+        <h2>Compressed Image</h2>
+        <p>Height: {{ compressed_info.Height }} pixels</p>
+        <p>Width: {{ compressed_info.Width }} pixels</p>
+        <p>Resolution: {{ compressed_info.Resolution }} pixels</p>
+        <p>Size: {{ compressed_size_kb }} KB</p>
+
+        <!-- Display the compressed image -->
+        <img src="{{ url_for('download', filename=compressed_image_filename) }}" alt="Compressed Image">
+
+        <h2>Download Links</h2>
+        <p><a href="{{ url_for('download', filename=compressed_image_filename) }}">Download Compressed Image</a></p>
+        <p><a href="{{ url_for('download', filename=compressed_pdf_filename) }}">Download Compressed PDF</a></p>
+
+        <h2>Convert to PDF</h2>
+        <form action="{{ url_for('convert_to_pdf') }}" method="post">
+            <input type="hidden" name="adjusted_image_filename" value="{{ compressed_image_filename }}">
+            <button type="submit">Convert Compressed Image to PDF</button>
+        </form>
+        <h2>Data Loss Percentage</h2>
+        <p>Data Loss: {{ ((original_size_kb - compressed_size_kb) / original_size_kb) * 100 | round(2) }}%</p>
+    </div>
+    <div class="bottom-bar">
+        <div class="scrolling-text">
+            USHA RAMA COLLEGE OF ENGINEERING AND TECHNOLOGY ( TEAM 6) AIML 
+        </div>
+    </div>
+</body>
+</html>
